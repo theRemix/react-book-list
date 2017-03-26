@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import BookListAppTitle from '../../components/BookListAppTitle';
 import BookList from '../BookList';
 import BookFilterInput from '../../components/BookFilterInput';
 import NewBookForm from '..//NewBookForm';
 import {addBookToFakeXHR, getBooksFromFakeXHR} from '../../lib/books.db';
+import { addBook, loadBooks, updateSearchFilter } from '../../actions';
 import './styles.css';
 
 // a react component
-export default class App extends Component {
+class App extends Component {
   constructor() {
     // give props to your parent
     super();
@@ -17,10 +19,10 @@ export default class App extends Component {
 
     // set the initial state of THIS COMPONENT
     // in the constructor
-    this.state = {
-      books : [],
-      filter : ''
-    };
+    // this.state = {
+    //   books : [],
+    //   filter : ''
+    // };
 
     this.addBook = this.addBook.bind(this);
     this.setFilter = this.setFilter.bind(this);
@@ -31,7 +33,7 @@ export default class App extends Component {
   componentWillMount(){
     getBooksFromFakeXHR()
       .then( books => {
-        this.setState({ books });
+        this.props.loadBooks( books );
       });
   }
 
@@ -40,13 +42,14 @@ export default class App extends Component {
   addBook(book){
     addBookToFakeXHR(book)
       .then( books => {
-        this.setState({ books });
+        console.log(books);
+        this.props.loadBooks( books );
       });
   }
 
   setFilter( event ) {
     const filter = event.target.value;
-    this.setState({ filter });
+    this.props.updateSearchFilter(filter);
   }
 
   render () {
@@ -54,9 +57,37 @@ export default class App extends Component {
       <div>
         <BookListAppTitle title={this.title} />
         <BookFilterInput setFilter={this.setFilter} />
-        <BookList books={this.state.books} searchFilter={this.state.filter} />
+        <BookList books={this.props.books} searchFilter={this.props.filter} />
         <NewBookForm addBook={this.addBook} />
       </div>
     );
   }
 };
+
+const mapStateToProps = (state) => {
+  return {
+    books: state.books,
+    searchFilter: state.searchFilter
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    loadBooks: books => {
+      dispatch(loadBooks(books))
+    },
+    addBook: book => {
+      dispatch(addBook(book))
+    },
+    updateSearchFilter: searchFilter => {
+      dispatch(updateSearchFilter(searchFilter))
+    },
+  }
+}
+
+const ConnectedApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
+
+export default ConnectedApp;
