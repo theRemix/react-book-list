@@ -1,4 +1,4 @@
-// l t bookIdx = 3;
+import { addBookToFakeXHR } from '../lib/books.db';
 
 export const loadBooks = books => {
   return {
@@ -7,13 +7,21 @@ export const loadBooks = books => {
   };
 };
 
-// export const addBook = book => {
-//   return {
-//     type: 'ADD_BOOK',
-//     id : ++bookIdx,
-//     book
-//   };
-// };
+export const addBook = book => {
+
+  return dispatch => {
+    // for a loading status
+    // dispatch(fetchingBooks())
+    return addBookToFakeXHR(book)
+      .then( books => {
+        dispatch({
+          type: 'ADD_BOOK',
+          books
+        });
+      });
+  }
+
+};
 
 export const updateSearchFilter = searchFilter => {
   return {

@@ -3,11 +3,8 @@ const books = (state = [], action) => {
     case 'LOAD_BOOKS':
       return [ ...action.books ];
 
-    // case 'ADD_BOOK':
-    //   return [
-    //     ...state,
-    //     action.book
-    //   ];
+    case 'ADD_BOOK':
+      return [ ...action.books ];
 
     default:
       return state;

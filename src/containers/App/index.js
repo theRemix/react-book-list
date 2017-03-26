@@ -4,7 +4,7 @@ import BookListAppTitle from '../../components/BookListAppTitle';
 import BookList from '../BookList';
 import BookFilterInput from '../../components/BookFilterInput';
 import NewBookForm from '..//NewBookForm';
-import {addBookToFakeXHR, getBooksFromFakeXHR} from '../../lib/books.db';
+import { getBooksFromFakeXHR } from '../../lib/books.db';
 import { addBook, loadBooks, updateSearchFilter } from '../../actions';
 import './styles.css';
 
@@ -40,11 +40,7 @@ class App extends Component {
 
   // goal
   addBook(book){
-    addBookToFakeXHR(book)
-      .then( books => {
-        console.log(books);
-        this.props.loadBooks( books );
-      });
+    this.props.addBook( book );
   }
 
   setFilter( event ) {
